@@ -6,7 +6,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         FileUserService fileUserService = new FileUserService(new IOUtils());
         while (true) {
-            System.out.println("0. Exit");
+            System.out.println("0. Save and end program");
             System.out.println("1. Sign up");
             System.out.println("2. Log in");
             System.out.println("3. Chat");

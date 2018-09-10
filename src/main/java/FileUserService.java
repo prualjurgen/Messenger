@@ -1,6 +1,4 @@
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,13 +54,10 @@ public class FileUserService {
                 ioUtils.writeMessage("Entered Email or password is Incorrect");
                 return;
             }
-
         } catch (IOException e) {
             ioUtils.writeMessage("Password or email is incorrect");
         }
-
     }
-
 
     public void chat() throws IOException {
         ioUtils.writeMessage("Enter your email: ");
@@ -82,46 +77,45 @@ public class FileUserService {
         ioUtils.writeMessage("IT IS THE TIME...what is your friends email?");
         String friendsEmail = ioUtils.readNextLine();
 
+         String fileName;
+        if (enteredEmail.compareTo(friendsEmail) > 0){
+            fileName = enteredEmail + " " + friendsEmail + ".txt";
+        } else {
+            fileName =  (friendsEmail + " " + enteredEmail+".txt" );
+        }
+
         //CHECKING IF FRIENDS EMAIL IS IN SYSTEM
         try {
             if (ioUtils.fileExist(friendsEmail + ".txt")) {
                 ioUtils.writeMessage("great say hello to your buddy(found friend email)");
             } else {
                 ioUtils.writeMessage("no such email in our system");
-
             }
-
             //CHECKING IF CONVERSATION EXISTS
             try {
-                Path filePath2 = Paths.get(enteredEmail + " " + friendsEmail);
-                List<String> conversation = Files.readAllLines(filePath2);
 
+                if (ioUtils.fileExist(fileName)) {
+                    Path filePath2 = Paths.get(fileName);
 
-                if (ioUtils.fileExist(enteredEmail + " " + friendsEmail + ".txt")) {
-                    for (String line: conversation) {
+                    List<String> conversation = Files.readAllLines(filePath2);
+                    for (String line : conversation) {
                         ioUtils.writeMessage(line);
-
+                        ioUtils.writeMessage("found chat");
+                        ioUtils.writeMessage("This is a new conversation");
                     }
-                } else {
-                    PrintWriter writer = new PrintWriter(enteredEmail + " " + friendsEmail + ".txt");
-                    writer.println("new Conversation");
-                    ioUtils.writeMessage("This is a new conversation");
-                    writer.close();
                 }
-
-                //WRITE MESSAGE
-                PrintWriter writer2 = new PrintWriter(enteredEmail + " " + friendsEmail + ".txt");
-                ioUtils.writeMessage("message: ");
-                String message = ioUtils.readNextLine();
-                writer2.println(message);
-                writer2.close();
-
             } catch (IOException e) {
                 ioUtils.writeMessage("error wtf");
                 ioUtils.writeMessage(String.valueOf(e));
             }
         } catch (Exception e) {
         }
+
+        //WRITE MESSAGE
+        PrintWriter writer2 = new PrintWriter(new FileOutputStream((new File(fileName)), true));
+        ioUtils.writeMessage("message: ");
+        String message = ioUtils.readNextLine();
+        writer2.append("\n").append(message);
+        writer2.close();
     }
 }
-
